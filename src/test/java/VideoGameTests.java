@@ -5,6 +5,16 @@ import static io.restassured.RestAssured.*;
 
 public class VideoGameTests extends VideoGameConfig {
 
+    String gameBodyJSON = """
+                {
+                  "category": "Platform",
+                  "name": "Mario",
+                  "rating": "Mature",
+                  "releaseDate": "2012-05-04",
+                  "reviewScore": 85
+                }""";
+
+
     @Test
     public void getAllGames(){
         given()
@@ -13,17 +23,8 @@ public class VideoGameTests extends VideoGameConfig {
         .then();
     }
 
-
     @Test
     public void createNewGameByJSON(){
-        String gameBodyJSON = """
-                {
-                  "category": "Platform",
-                  "name": "Mario",
-                  "rating": "Mature",
-                  "releaseDate": "2012-05-04",
-                  "reviewScore": 85
-                }""";
 
         given()
                 .body((gameBodyJSON))
@@ -50,6 +51,41 @@ public class VideoGameTests extends VideoGameConfig {
         .when()
                 .post(VideoGameEndpoints.ALL_VIDEO_GAMES)
         .then();
-
     }
+
+    @Test
+    public void updateGameByJSON(){
+        given()
+                    .body((gameBodyJSON))
+                .when()
+                    .put("videogame/3")
+                .then();
+    }
+
+    @Test
+    public void deleteGameByJSON(){
+        given()
+                .accept("text/plain")
+                .when()
+                    .delete("videogame/5")
+                .then();
+    }
+
+    @Test
+    public void getSingleGame(){
+        given()
+                .pathParam("videoGameId", 5)
+        .when()
+                .get(VideoGameEndpoints.SINGLE_VIDEO_GAME)
+        .then();
+    }
+
+
+
+
+
+
+
+
+
 }
