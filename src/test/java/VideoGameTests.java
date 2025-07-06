@@ -3,7 +3,9 @@ import config.VideoGameEndpoints;
 import static io.restassured.matcher.RestAssuredMatchers.*;
 
 import io.restassured.module.jsv.JsonSchemaValidator;
+import io.restassured.response.Response;
 import objects.VideoGame;
+import org.junit.Assert;
 import org.junit.Test;
 import java.io.File;
 
@@ -98,6 +100,19 @@ public class VideoGameTests extends VideoGameConfig {
         .then();
     }
 
+    @Test
+    public void convertJsonToPojo(){
+        Response response =
+                given()
+                        .pathParam("videoGameId", 5)
+                        .when()
+                        .get(VideoGameEndpoints.SINGLE_VIDEO_GAME);
+
+        VideoGame videoGame = response.getBody().as(VideoGame.class);
+        System.out.println(videoGame.toString());
+
+    }
+
     // Validating against XML Schema
     @Test
     public void testVideoGamesSchemaXML(){
@@ -123,6 +138,18 @@ public class VideoGameTests extends VideoGameConfig {
                 .get(VideoGameEndpoints.SINGLE_VIDEO_GAME)
         .then()
                 .body(JsonSchemaValidator.matchesJsonSchema(jsonFile));
+    }
+
+    // Measure server response time
+
+    @Test
+    public void captureResponseTime(){
+        long responseTime = get(VideoGameEndpoints.ALL_VIDEO_GAMES).time();
+        // Multiple assertions
+        Assert.assertTrue("Response time too slow: " + responseTime + "ms", responseTime < 900);
+        Assert.assertTrue("Response time suspiciously fast: " + responseTime + "ms", responseTime > 500);
+        System.out.println("Response time in ms: " + responseTime);
+
     }
 
 
