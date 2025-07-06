@@ -1,7 +1,14 @@
 import config.VideoGameConfig;
 import config.VideoGameEndpoints;
+import static io.restassured.matcher.RestAssuredMatchers.*;
+
+import io.restassured.module.jsv.JsonSchemaValidator;
+import objects.VideoGame;
 import org.junit.Test;
+import java.io.File;
+
 import static io.restassured.RestAssured.*;
+
 
 public class VideoGameTests extends VideoGameConfig {
 
@@ -78,6 +85,44 @@ public class VideoGameTests extends VideoGameConfig {
         .when()
                 .get(VideoGameEndpoints.SINGLE_VIDEO_GAME)
         .then();
+    }
+
+    // Using Object serialization to create a new game
+    @Test
+    public void testVideoGameSerializationByJson(){
+        VideoGame videoGame = new VideoGame("Shooter", "ShipDestroyerGame", "Mature", "2018-01-09", 75);
+        given()
+                .body(videoGame)
+        .when()
+                .post(VideoGameEndpoints.ALL_VIDEO_GAMES)
+        .then();
+    }
+
+    // Validating against XML Schema
+    @Test
+    public void testVideoGamesSchemaXML(){
+        File xsdFile = new File("src/main/java/resources/VideoGameXSD.xsd");
+        given()
+                .pathParam("videoGameId", 5)
+                .accept("application/xml")
+        .when()
+                .get(VideoGameEndpoints.SINGLE_VIDEO_GAME)
+        .then()
+                .body(matchesXsd(xsdFile));
+
+    }
+
+    // Validating against JSON Schema
+    @Test
+    public void testVideoGamesSchemaJSON(){
+        File jsonFile = new File("src/main/java/resources/VideoGameJsonSchema.json");
+        given()
+                .pathParam("videoGameId", 5)
+                .accept("application/json")
+        .when()
+                .get(VideoGameEndpoints.SINGLE_VIDEO_GAME)
+        .then()
+                .body(JsonSchemaValidator.matchesJsonSchema(jsonFile));
     }
 
 

@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string"
+    },
+    "id": {
+      "type": "integer"
+    },
+    "name": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "string"
+    },
+    "releaseDate": {
+      "type": "string"
+    },
+    "reviewScore": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "category",
+    "id",
+    "name",
+    "rating",
+    "releaseDate",
+    "reviewScore"
+  ]
+}
