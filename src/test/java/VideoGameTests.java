@@ -141,7 +141,6 @@ public class VideoGameTests extends VideoGameConfig {
     }
 
     // Measure server response time
-
     @Test
     public void captureResponseTime(){
         long responseTime = get(VideoGameEndpoints.ALL_VIDEO_GAMES).time();
